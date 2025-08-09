@@ -2,6 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)\\.css",
@@ -10,20 +13,12 @@
     {
       "source": "/(.*)\\.(js|mjs)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
-        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
-        { "key": "Cross-Origin-Embedder-Policy", "value": "require-corp" }
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
       "source": "/public/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
-    },
-    {
-      "source": "/",
-      "headers": [
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'" }
-      ]
     }
   ]
 }
