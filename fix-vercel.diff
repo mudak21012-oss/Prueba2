@@ -1,0 +1,57 @@
+diff --git a/scripts/images.js b/scripts/images.js
+index 1234567..89abcde 100644
+--- a/scripts/images.js
++++ b/scripts/images.js
+@@
+-export async function resolveOgImage(link){
+-  if (!link) return null;
+-  const key = `img:${link}`;
+-  const cached = lsGet(key);
+-  if (cached) return cached;
+-
+-  try {
+-    const url = `/api/og?url=${encodeURIComponent(link)}`;
+-    const ctl = new AbortController();
+-    const timer = setTimeout(()=>ctl.abort(), 6000);
+-    const res = await fetch(url, { signal: ctl.signal, mode: 'cors', credentials: 'omit' });
+-    clearTimeout(timer);
+-    if (!res.ok) return null;
+-    const data = await res.json();
+-    if (data && data.image) {
+-      lsSet(key, data.image, IMG_TTL_MS);
+-      return data.image;
+-    }
+-  } catch {}
+-  return null;
+-}
++// Desactivamos temporalmente el uso de /api/og en producción.
++// Se usa únicamente el fallback por color para evitar 404 en Vercel.
++export async function resolveOgImage(_link){
++  return null;
++}
+diff --git a/vercel.json b/vercel.json
+index 7654321..fedcba9 100644
+--- a/vercel.json
++++ b/vercel.json
+@@
+-{
+-  "$schema": "https://openapi.vercel.sh/vercel.json",
+-  "cleanUrls": true,
+-  "trailingSlash": false,
+-  "headers": [
+-    {
+-      "source": "/(.*)\\.css",
+-      "headers": [
+-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+-      ]
+-    }
+-  ]
+-}
++{
++  "$schema": "https://openapi.vercel.sh/vercel.json",
++  "cleanUrls": true,
++  "trailingSlash": false,
++  "rewrites": [
++    { "source": "/", "destination": "/index.html" }
++  ]
++}
