@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="x-ua-compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Hoho3D Filamentos — Buscador, Rueda de color y Vista 3D</title>
+  <meta name="description" content="Busca, filtra y visualiza filamentos de impresión 3D con lista virtualizada, rueda de color y vista previa 3D. UI accesible y optimizada." />
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#0a1e2d">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Hoho3D Filamentos — Buscador y Recomendaciones">
+  <meta property="og:description" content="Explora filamentos por nombre, marca y color. Interfaz accesible con lista virtualizada y preview 3D.">
+  <meta property="og:image" content="./public/logo.svg">
+  <meta property="og:locale" content="es_AR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Hoho3D Filamentos — Buscador y Recomendaciones">
+  <meta name="twitter:description" content="Explora filamentos por nombre, marca y color. Interfaz accesible con lista virtualizada y preview 3D.">
+  <meta name="twitter:image" content="./public/logo.svg">
+
+  <!-- Favicon (usa SVG; si añades favicon.ico también se usará) -->
+  <link rel="icon" href="./public/logo.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="./public/favicon.ico">
+
+  <!-- CSS principal -->
+  <link rel="stylesheet" href="./styles/main.css">
+</head>
+<body>
+  <header role="banner" class="site-header" aria-label="Encabezado del sitio">
+    <div style="display:flex; align-items:center; justify-content:center; gap:.5rem;">
+      <img src="./public/logo.svg" alt="Hoho3D" width="36" height="36" decoding="async" loading="eager">
+      <div>
+        <h1 class="site-title">Hoho3D Filamentos</h1>
+        <p class="site-subtitle">Busca y visualiza colores para impresión 3D con estilo futurista</p>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" role="main" class="layout" aria-label="Contenido principal">
+    <!-- Panel Izquierdo -->
+    <section id="search-panel" class="panel panel--left" aria-label="Buscador y lista de filamentos">
+      <div id="search-field"
+           class="md-text-field"
+           role="combobox"
+           aria-expanded="false"
+           aria-haspopup="listbox"
+           aria-controls="results-listbox"
+           aria-owns="results-listbox"
+           aria-autocomplete="list"
+           aria-activedescendant="">
+        <svg class="leading-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 5 1.5-1.5-5-5m-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14Z"/>
+        </svg>
+        <input id="search-input" class="md-text-field__input" type="search"
+               placeholder="Buscar por nombre, hex, marca o estilo…"
+               aria-label="Buscar filamento por nombre, código hexadecimal, marca o estilo"
+               autocomplete="off" spellcheck="false">
+      </div>
+
+      <div id="results-container" class="results" role="region" aria-label="Resultados de filamentos">
+        <noscript>
+          <p>Activa JavaScript para búsqueda y lista virtualizada. Se mostrará una lista básica sin interacción.</p>
+          <ul id="noscript-list"></ul>
+        </noscript>
+
+        <div id="results-listbox" class="results__list" role="listbox" tabindex="0"
+             aria-label="Resultados de filamentos" aria-busy="false" aria-live="off"></div>
+      </div>
+    </section>
+
+    <!-- Panel Central -->
+    <section id="center-panel" class="panel panel--center" aria-label="Selector de color y rueda">
+      <div id="color-wheel" role="slider" aria-orientation="horizontal"
+           aria-valuemin="0" aria-valuemax="359" aria-valuenow="0"
+           aria-valuetext="Ángulo 0 grados" tabindex="0"
+           aria-label="Selector de color en rueda (usa flechas izquierda/derecha o arrastra)">
+        <div class="wheel-indicator" aria-hidden="true"></div>
+      </div>
+
+      <div id="selected-info" class="selection" aria-live="polite" aria-atomic="true">
+        <div id="selected-name">Selecciona un color</div>
+        <div id="selected-hex" class="mono"></div>
+      </div>
+
+      <button id="random-idea-btn" class="md-btn" aria-describedby="random-idea-output">
+        Generar idea random
+      </button>
+      <div id="random-idea-output" class="idea-out" role="status" aria-live="polite"></div>
+    </section>
+
+    <!-- Panel Derecho -->
+    <section id="detail-panel" class="panel panel--right" aria-label="Información técnica y vista previa 3D">
+      <h2 class="panel__title">Detalles del Filamento</h2>
+
+      <div class="hero" aria-live="polite">
+        <div class="color-box-large" id="detail-colorbox" aria-hidden="true"></div>
+        <div class="hero-meta">
+          <span class="brand-badge" id="detail-brand" aria-label="Marca">-</span>
+          <p><strong>Nombre:</strong> <span id="detail-name">-</span></p>
+          <p><strong>Código Hex:</strong> <span id="detail-hex">-</span></p>
+          <p><strong>Tipo:</strong> <span id="detail-type">-</span></p>
+          <p><strong>Estilo:</strong> <span id="detail-style">-</span></p>
+          <p><strong>Temperatura de impresión:</strong> <span id="detail-temp">-</span></p>
+          <p><strong>Resistencia:</strong> <span id="detail-strength">-</span></p>
+        </div>
+      </div>
+
+      <figure id="detail-image" aria-label="Imagen del producto" hidden>
+        <a id="detail-link" href="#" target="_blank" rel="noopener noreferrer">
+          <img id="detail-img" src="" alt="" loading="lazy" decoding="async" width="560" height="380">
+        </a>
+        <figcaption id="detail-figcap" class="visually-hidden">Imagen del filamento</figcaption>
+      </figure>
+
+      <canvas id="preview-canvas" width="280" height="280" role="img"
+              aria-label="Vista previa 3D del color seleccionado"></canvas>
+    </section>
+  </main>
+
+  <footer role="contentinfo" aria-label="Pie de página" style="text-align:center; margin-block: 1.25rem 0;">
+    <p>&copy; <span id="year"></span> Hoho3D — Filamentos</p>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  </footer>
+
+  <!-- Entry point ESM (main importa el resto de módulos) -->
+  <script type="module" src="./scripts/main.js"></script>
+  <noscript><p class="no-js">JavaScript desactivado: las funciones avanzadas requieren JS.</p></noscript>
+</body>
+</html>
