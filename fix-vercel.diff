@@ -1,8 +1,11 @@
 diff --git a/scripts/images.js b/scripts/images.js
-index 1234567..89abcde 100644
+index 0000000..0000001 100644
 --- a/scripts/images.js
 +++ b/scripts/images.js
-@@
+@@ -1,999 +1,17 @@
+-/* … contenido anterior … */
+-// (Aquí había lógica que hacía fetch a /api/og)
+-
 -export async function resolveOgImage(link){
 -  if (!link) return null;
 -  const key = `img:${link}`;
@@ -24,34 +27,62 @@ index 1234567..89abcde 100644
 -  } catch {}
 -  return null;
 -}
-+// Desactivamos temporalmente el uso de /api/og en producción.
-+// Se usa únicamente el fallback por color para evitar 404 en Vercel.
++// Parche: deshabilitamos uso de /api/og en producción para evitar 404.
++// La app usará únicamente el fallback por color (thumbnails por color).
 +export async function resolveOgImage(_link){
 +  return null;
 +}
+diff --git a/index.html b/index.html
+index 0000000..0000002 100644
+--- a/index.html
++++ b/index.html
+@@ -1,20 +1,27 @@
+ <!DOCTYPE html>
+ <html lang="es">
+ <head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1" />
+-  <link rel="stylesheet" href="/styles/main.css">
++  <!-- CSS: usar ruta relativa para hosting estático -->
++  <link rel="stylesheet" href="./styles/main.css">
+   <title>Hoho3D Filamentos — Buscador y Recomendaciones</title>
++  <link rel="icon" href="./public/favicon.ico">
++  <meta name="description" content="Busca, filtra y visualiza filamentos de impresión 3D con lista virtualizada, rueda de color y vista previa 3D. UI accesible y optimizada.">
++  <meta property="og:type" content="website">
++  <meta property="og:title" content="Hoho3D Filamentos — Buscador y Recomendaciones">
++  <meta property="og:description" content="Explora filamentos por nombre, marca y color. Interfaz accesible con lista virtualizada y preview 3D.">
++  <meta property="og:image" content="./public/logo.svg">
+ </head>
+ <body>
+-  <!-- header con logo -->
+-  <img src="/public/logo.svg" alt="Hoho3D" width="36" height="36">
++  <!-- header con logo (ruta relativa) -->
++  <img src="./public/logo.svg" alt="Hoho3D" width="36" height="36">
+ 
+   <!-- … resto del contenido … -->
+ 
+-  <script type="module" src="/scripts/main.js"></script>
++  <!-- Scripts: punto de entrada ESM con ruta relativa -->
++  <script type="module" src="./scripts/main.js"></script>
+   <noscript><p>Activa JavaScript para funcionalidades avanzadas.</p></noscript>
+ </body>
+ </html>
 diff --git a/vercel.json b/vercel.json
-index 7654321..fedcba9 100644
+index 0000000..0000003 100644
 --- a/vercel.json
 +++ b/vercel.json
-@@
--{
+@@ -1,12 +1,6 @@
+ {
 -  "$schema": "https://openapi.vercel.sh/vercel.json",
 -  "cleanUrls": true,
 -  "trailingSlash": false,
 -  "headers": [
 -    {
 -      "source": "/(.*)\\.css",
--      "headers": [
--        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
--      ]
+-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
 -    }
 -  ]
--}
-+{
 +  "$schema": "https://openapi.vercel.sh/vercel.json",
 +  "cleanUrls": true,
-+  "trailingSlash": false,
-+  "rewrites": [
-+    { "source": "/", "destination": "/index.html" }
-+  ]
-+}
++  "trailingSlash": false
+ }
