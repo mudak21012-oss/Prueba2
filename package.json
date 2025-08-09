@@ -1,0 +1,10 @@
+{
+  "name": "hoho3d-filamentos",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve -l 5173 .",
+    "build": "echo \"Static build (no-op)\"",
+    "start": "npx serve -l 3000 ."
+  }
+}
